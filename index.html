@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>极客对比 | 数码家电纯净对比工具</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, sans-serif;
+            background: #f5f7fb;
+            color: #1e2a3e;
+            line-height: 1.4;
+        }
+
+        /* 极简科技风主色调 */
+        :root {
+            --primary: #0a58ca;
+            --primary-light: #eef4ff;
+            --gray-bg: #f8fafc;
+            --border-light: #e2e8f0;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --highlight: #dc2626;
+            --highlight-bg: #fee2e2;
+            --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.03), 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        /* 布局 */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* 头部 */
+        .header {
+            background: white;
+            border-bottom: 1px solid var(--border-light);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(4px);
+            background: rgba(255,255,255,0.96);
+        }
+
+        .header-inner {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 16px 0;
+        }
+
+        .logo {
+            font-size: 1.7rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #0a58ca, #2c7da0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.3px;
+        }
+        .logo span {
+            font-weight: 400;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            background: none;
+            -webkit-background-clip: unset;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 28px;
+            font-weight: 500;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-main);
+            transition: color 0.2s;
+        }
+        .nav-links a:hover { color: var(--primary); }
+
+        /* 搜索栏 + 筛选区域 */
+        .search-filter {
+            background: white;
+            border-radius: 28px;
+            padding: 12px 20px;
+            margin: 24px 0 20px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border-light);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .search-box {
+            flex: 2;
+            min-width: 200px;
+            display: flex;
+            align-items: center;
+            background: var(--gray-bg);
+            border-radius: 40px;
+            padding: 6px 16px;
+            border: 1px solid var(--border-light);
+        }
+        .search-box input {
+            border: none;
+            background: transparent;
+            width: 100%;
+            padding: 10px 0;
+            outline: none;
+            font-size: 0.95rem;
+        }
+        .filter-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .filter-group select, .sort-select {
+            padding: 8px 16px;
+            border-radius: 40px;
+            border: 1px solid var(--border-light);
+            background: white;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-primary:hover { background: #0b5ed7; transform: translateY(-1px);}
+        .btn-outline {
+            background: white;
+            border: 1px solid var(--border-light);
+            padding: 6px 16px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-outline:hover { background: var(--primary-light); border-color: var(--primary);}
+
+        /* 产品网格 */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+            margin: 28px 0;
+        }
+        .product-card {
+            background: white;
+            border-radius: 24px;
+            padding: 18px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border-light);
+            transition: all 0.2s ease;
+        }
+        .product-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0,0,0,0.05);}
+        .product-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+        .product-cat {
+            font-size: 0.7rem;
+            color: var(--primary);
+            background: var(--primary-light);
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 20px;
+        }
+        .price {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin: 12px 0 6px;
+        }
+        .score {
+            background: #f1f5f9;
+            border-radius: 20px;
+            padding: 4px 8px;
+            font-size: 0.8rem;
+            display: inline-block;
+        }
+        .card-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+        .btn-compare {
+            background: var(--primary-light);
+            border: none;
+            padding: 6px 12px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .btn-detail {
+            background: white;
+            border: 1px solid var(--border-light);
+            padding: 6px 12px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+
+        /* 对比栏 (浮动底部) */
+        .compare-bar {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(16px);
+            border-radius: 60px;
+            padding: 12px 24px;
+            color: white;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            z-index: 200;
+            box-shadow: 0 8px 28px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .compare-items {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .compare-chip {
+            background: #334155;
+            border-radius: 40px;
+            padding: 6px 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+        }
+        .remove-compare {
+            background: none;
+            border: none;
+            color: #f87171;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .compare-btn {
+            background: #3b82f6;
+            border: none;
+            padding: 8px 24px;
+            border-radius: 40px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* 模态框 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 1000;
+            overflow-y: auto;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: white;
+            max-width: 1300px;
+            width: 92%;
+            margin: 40px auto;
+            border-radius: 32px;
+            padding: 28px;
+            position: relative;
+            animation: fadeIn 0.2s ease;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 2px solid var(--border-light);
+            padding-bottom: 16px;
+            margin-bottom: 20px;
+        }
+        .close-modal {
+            font-size: 28px;
+            cursor: pointer;
+        }
+        .compare-table {
+            overflow-x: auto;
+        }
+        .compare-table table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+        .compare-table th, .compare-table td {
+            border: 1px solid var(--border-light);
+            padding: 12px 10px;
+            vertical-align: top;
+            text-align: left;
+        }
+        .compare-table th {
+            background: #f1f5f9;
+            font-weight: 600;
+        }
+        .diff-highlight {
+            background-color: var(--highlight-bg);
+            color: var(--highlight);
+            font-weight: 600;
+        }
+        .param-comment {
+            font-size: 0.7rem;
+            color: #6c757d;
+            display: block;
+            margin-top: 4px;
+        }
+        .tool-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 24px;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+        .budget-card {
+            background: white;
+            border-radius: 20px;
+            padding: 16px;
+            margin: 20px 0;
+            border: 1px solid var(--border-light);
+        }
+        @media (max-width: 760px) {
+            .container { padding: 0 16px; }
+            .compare-bar { border-radius: 20px; flex-direction: column; align-items: stretch; bottom: 10px; left: 10px; right: 10px; }
+        }
+        footer {
+            text-align: center;
+            padding: 40px 0 24px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border-light);
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <div class="container header-inner">
+        <div class="logo">极客对比<span> · 纯净数码工具</span></div>
+        <div class="nav-links">
+            <a href="#" data-nav="home">首页</a>
+            <a href="#" data-nav="products">产品库</a>
+            <a href="#" data-nav="guide">选购科普</a>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- 搜索与筛选栏 -->
+    <div class="search-filter">
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="搜索产品名称 / 型号... 例如 iPhone 15">
+        </div>
+        <div class="filter-group">
+            <select id="categoryFilter">
+                <option value="all">全部分类</option>
+                <option value="手机">📱 手机</option>
+                <option value="耳机">🎧 耳机</option>
+                <option value="平板">📟 平板/电脑</option>
+                <option value="穿戴">⌚ 智能穿戴</option>
+            </select>
+            <select id="brandFilter">
+                <option value="all">全部品牌</option>
+                <option value="Apple">Apple</option>
+                <option value="Samsung">三星</option>
+                <option value="Xiaomi">小米</option>
+                <option value="Huawei">华为</option>
+                <option value="Sony">Sony</option>
+            </select>
+            <select id="sortSelect">
+                <option value="default">默认排序</option>
+                <option value="price_asc">价格升序</option>
+                <option value="price_desc">价格降序</option>
+                <option value="score_desc">性价比高分优先</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- 预算推荐简易模块 -->
+    <div class="budget-card" id="budgetWidget">
+        <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
+            <strong>💰 预算推荐</strong>
+            <input type="number" id="budgetInput" placeholder="预算金额" style="padding: 8px; border-radius: 30px; border:1px solid #ccc; width: 130px;">
+            <select id="usageSelect">
+                <option value="all">用途不限</option>
+                <option value="游戏">🎮 游戏性能</option>
+                <option value="拍照">📸 拍照影音</option>
+                <option value="办公">💼 办公续航</option>
+            </select>
+            <button id="recommendBtn" class="btn-outline">智能推荐</button>
+        </div>
+        <div id="recommendResult" style="margin-top: 12px; font-size: 0.85rem;"></div>
+    </div>
+
+    <!-- 产品列表网格 -->
+    <div id="productGrid" class="product-grid"></div>
+</div>
+
+<!-- 底部对比栏 -->
+<div id="compareBar" class="compare-bar" style="display: none;">
+    <div class="compare-items" id="compareItemsList"></div>
+    <div style="display: flex; gap: 12px;">
+        <button id="clearCompareBtn" class="btn-outline" style="background:#334155; color:white;">清空</button>
+        <button id="startCompareBtn" class="compare-btn">开始对比</button>
+    </div>
+</div>
+
+<!-- 对比弹窗 -->
+<div id="compareModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>📊 产品横向对比</h2>
+            <span class="close-modal">&times;</span>
+        </div>
+        <div id="compareTableContainer" class="compare-table"></div>
+        <div class="tool-buttons">
+            <button id="exportPdfBtn" class="btn-outline">📄 导出PDF (打印)</button>
+            <button id="copyLinkBtn" class="btn-outline">🔗 复制分享链接</button>
+            <button id="screenshotBtn" class="btn-outline">📸 截图提醒</button>
+        </div>
+        <p style="font-size: 12px; margin-top: 16px; color: #6c757d;">差异参数已标红加粗 | 通俗解释辅助理解，客观对比无营销</p>
+    </div>
+</div>
+
+<!-- 详情弹窗 -->
+<div id="detailModal" class="modal">
+    <div class="modal-content" style="max-width: 700px;">
+        <div class="modal-header">
+            <h2 id="detailTitle">产品详情</h2>
+            <span class="close-detail">&times;</span>
+        </div>
+        <div id="detailContent"></div>
+    </div>
+</div>
+
+<script>
+    // ---------- 产品数据库 (涵盖手机/耳机/平板/穿戴, 含全维度参数 & 通俗注解映射) ----------
+    const productsDB = [
+        { id: 1, name: "iPhone 15 Pro", brand: "Apple", category: "手机", price: 7999, score: 9.2, imgEmoji: "📱", specs: { chip: "A17 Pro", ram: "8GB", storage: "256GB", display: "6.1英寸 OLED 120Hz", camera: "48MP主摄+12MP超广角+12MP长焦", battery: "3274mAh", charging: "27W有线+15W无线", os: "iOS 17", weight: "187g" }, pros: "性能强悍，生态流畅", cons: "充电慢，价格偏高", tags: "旗舰机" },
+        { id: 2, name: "Samsung Galaxy S24 Ultra", brand: "Samsung", category: "手机", price: 9699, score: 9.0, specs: { chip: "骁龙8 Gen3", ram: "12GB", storage: "256GB", display: "6.8英寸 AMOLED 120Hz", camera: "200MP主摄", battery: "5000mAh", charging: "45W有线+15W无线", os: "OneUI 6.1", weight: "232g" }, pros: "屏幕惊艳, AI功能", cons: "价格昂贵", tags: "安卓机皇" },
+        { id: 3, name: "小米14 Pro", brand: "Xiaomi", category: "手机", price: 4999, score: 9.4, specs: { chip: "骁龙8 Gen3", ram: "12GB", storage: "256GB", display: "6.73英寸 120Hz", camera: "徕卡三摄", battery: "4880mAh", charging: "120W有线+50W无线", os: "HyperOS", weight: "223g" }, pros: "性价比极高，充电快", cons: "系统广告较多", tags: "高性价比" },
+        { id: 4, name: "Huawei Pura 70 Pro", brand: "Huawei", category: "手机", price: 6999, score: 8.8, specs: { chip: "麒麟9010", ram: "12GB", storage: "512GB", display: "6.8英寸 OLED", camera: "超聚光影像", battery: "5050mAh", charging: "100W有线+80W无线", os: "鸿蒙4.2", weight: "220g" }, pros: "信号强，拍照独特", cons: "无GMS服务", tags: "影像旗舰" },
+        { id: 5, name: "Sony WH-1000XM5", brand: "Sony", category: "耳机", price: 1999, score: 9.5, specs: { type: "头戴式降噪", batteryLife: "30小时", noiseCancel: "AI降噪", codec: "LDAC", weight: "250g", charging: "USB-C快充" }, pros: "顶级降噪，音质出色", cons: "不可折叠", tags: "旗舰耳机" },
+        { id: 6, name: "AirPods Pro 2", brand: "Apple", category: "耳机", price: 1899, score: 9.3, specs: { type: "入耳式", batteryLife: "6小时(降噪开)", noiseCancel: "H2芯片自适应", chip: "H2", weight: "5.3g", charging: "MagSafe" }, pros: "无缝生态，通透模式强", cons: "续航一般", tags: "苹果党必备" },
+        { id: 7, name: "iPad Pro 11 (M4)", brand: "Apple", category: "平板", price: 8999, score: 9.6, specs: { chip: "M4", ram: "8GB", storage: "256GB", display: "11英寸 Ultra Retina", battery: "31Wh", pencil: "支持Pro", os: "iPadOS" }, pros: "M4性能天花板", cons: "昂贵", tags: "生产力" },
+        { id: 8, name: "Xiaomi Pad 6S Pro", brand: "Xiaomi", category: "平板", price: 3299, score: 9.0, specs: { chip: "骁龙8 Gen2", ram: "8GB", storage: "256GB", display: "12.4英寸 144Hz", battery: "10000mAh", charging: "67W" }, pros: "高刷屏，性价比", cons: "生态稍弱", tags: "影音平板" },
+        { id: 9, name: "Apple Watch Series 9", brand: "Apple", category: "穿戴", price: 2999, score: 8.9, specs: { chip: "S9 SIP", display: "全天候屏", health: "血氧/ECG", batteryLife: "18小时", gps: "L1" }, pros: "健康监测全面", cons: "一天一充" },
+        { id: 10, name: "小米手环8 Pro", brand: "Xiaomi", category: "穿戴", price: 399, score: 8.5, specs: { chip: "不明", display: "1.74英寸", health: "心率血氧", batteryLife: "14天" }, pros: "超长续航，价格实惠", cons: "精度一般" }
+    ];
+
+    // 参数中文映射 & 通俗解释字典
+    const paramNames = {
+        chip: "处理器", ram: "运行内存", storage: "存储空间", display: "屏幕", camera: "摄像头", battery: "电池容量", charging: "充电规格", os: "操作系统", weight: "重量",
+        type: "产品类型", batteryLife: "续航时长", noiseCancel: "降噪特性", codec: "音频编码", pencil: "手写笔", health: "健康功能", gps: "定位"
+    };
+    const paramComments = {
+        chip: "芯片决定运算速度，旗舰级满足大型游戏/多任务", ram: "越大同时开启应用越多", storage: "存放照片/文件空间", display: "屏幕观感关键参数", camera: "影响拍照成像", charging: "快充功率越高，回血越快", batteryLife: "续航参考，实际因人而异", noiseCancel: "优秀降噪隔绝外界噪音"
+    };
+
+    let currentProducts = [...productsDB];
+    let compareList = [];   // 存储产品对象, 最多4个且同品类限制
+
+    // 渲染产品网格
+    function renderProducts() {
+        const searchVal = document.getElementById('searchInput').value.toLowerCase();
+        const catVal = document.getElementById('categoryFilter').value;
+        const brandVal = document.getElementById('brandFilter').value;
+        let filtered = currentProducts.filter(p => {
+            let matchSearch = p.name.toLowerCase().includes(searchVal) || p.brand.toLowerCase().includes(searchVal);
+            let matchCat = catVal === 'all' || p.category === catVal;
+            let matchBrand = brandVal === 'all' || p.brand === brandVal;
+            return matchSearch && matchCat && matchBrand;
+        });
+        const sortType = document.getElementById('sortSelect').value;
+        if (sortType === 'price_asc') filtered.sort((a,b)=>a.price-b.price);
+        else if (sortType === 'price_desc') filtered.sort((a,b)=>b.price-a.price);
+        else if (sortType === 'score_desc') filtered.sort((a,b)=>b.score-a.score);
+        const grid = document.getElementById('productGrid');
+        grid.innerHTML = filtered.map(p => `
+            <div class="product-card">
+                <div><span style="font-size:2rem;">${p.imgEmoji || (p.category==='手机'?'📱':p.category==='耳机'?'🎧':'📟')}</span> <span class="product-cat">${p.category}</span></div>
+                <div class="product-title">${p.name}</div>
+                <div>${p.brand}</div>
+                <div class="price">¥${p.price.toLocaleString()}</div>
+                <div><span class="score">⭐ 性价比评分 ${p.score}</span></div>
+                <div class="card-actions">
+                    <button class="btn-compare" data-id="${p.id}">➕ 对比</button>
+                    <button class="btn-detail" data-id="${p.id}">📖 详情</button>
+                </div>
+            </div>
+        `).join('');
+        // 绑定对比事件
+        document.querySelectorAll('.btn-compare').forEach(btn => {
+            btn.addEventListener('click', (e) => { addToCompare(parseInt(btn.dataset.id)); });
+        });
+        document.querySelectorAll('.btn-detail').forEach(btn => {
+            btn.addEventListener('click', (e) => { showDetail(parseInt(btn.dataset.id)); });
+        });
+    }
+
+    function addToCompare(productId) {
+        const product = productsDB.find(p => p.id === productId);
+        if (!product) return;
+        if (compareList.some(p => p.id === product.id)) { alert("已在对比栏中"); return; }
+        if (compareList.length >= 4) { alert("最多对比4款产品，请先移除"); return; }
+        if (compareList.length > 0 && compareList[0].category !== product.category) {
+            alert(`品类限制：只能对比同品类产品 (当前对比品类 ${compareList[0].category})，请清空后再试。`);
+            return;
+        }
+        compareList.push(product);
+        updateCompareBar();
+    }
+
+    function removeFromCompare(id) {
+        compareList = compareList.filter(p => p.id !== id);
+        updateCompareBar();
+    }
+
+    function updateCompareBar() {
+        const bar = document.getElementById('compareBar');
+        const container = document.getElementById('compareItemsList');
+        if (compareList.length === 0) { bar.style.display = 'none'; return; }
+        bar.style.display = 'flex';
+        container.innerHTML = compareList.map(p => `
+            <div class="compare-chip">
+                ${p.name} 
+                <button class="remove-compare" data-id="${p.id}">✖</button>
+            </div>
+        `).join('');
+        document.querySelectorAll('.remove-compare').forEach(btn => {
+            btn.addEventListener('click', (e) => { removeFromCompare(parseInt(btn.dataset.id)); });
+        });
+    }
+
+    // 开始对比，展示模态框 差异高亮 + 通俗翻译
+    function showCompareModal() {
+        if (compareList.length < 2) { alert("请至少添加2款产品进行对比"); return; }
+        const products = compareList;
+        // 获取所有参数keys并集
+        let allKeys = new Set();
+        products.forEach(p => { Object.keys(p.specs).forEach(k => allKeys.add(k)); });
+        const paramOrder = ['chip','ram','storage','display','camera','battery','charging','os','weight','type','batteryLife','noiseCancel','codec','health']; // 合理顺序
+        let sortedKeys = [...allKeys].sort((a,b) => paramOrder.indexOf(a)-paramOrder.indexOf(b));
+        let html = `<table><thead><tr><th>参数 / 产品</th>${products.map(p => `<th>${p.name}</th>`).join('')}</tr></thead><tbody>`;
+        sortedKeys.forEach(key => {
+            const paramZh = paramNames[key] || key;
+            let rowCells = `<td style="background:#f8fafc; font-weight:500;">${paramZh}</td>`;
+            let values = products.map(p => p.specs[key] || '—');
+            // 差异检测：如果所有值相同则不加高亮，否则单独加
+            const allEqual = values.every(v => v === values[0]);
+            products.forEach((p, idx) => {
+                let val = p.specs[key] || '—';
+                let isDiff = (!allEqual && val !== values[0]) || (!allEqual && values.filter(v=>v===val).length < products.length);
+                let commentHtml = (paramComments[key] && val !== '—') ? `<span class="param-comment">💡 ${paramComments[key]}</span>` : '';
+                let tdClass = isDiff ? 'diff-highlight' : '';
+                rowCells += `<td class="${tdClass}">${val} ${commentHtml}</td>`;
+            });
+            html += `<tr>${rowCells}</tr>`;
+        });
+        // 额外附加性价比评分和选购建议
+        html += `<tr><td style="background:#f8fafc;">⭐ 性价比评分</td>${products.map(p => `<td>${p.score}/10</td>`).join('')}</tr>`;
+        html += `<tr><td style="background:#f8fafc;">📌 优缺点速览</td>${products.map(p => `<td><span style="color:green;">✅${p.pros||'综合不错'}</span><br><span style="color:#b91c1c;">⚠️${p.cons||'无明显短板'}</span></td>`).join('')}</tr>`;
+        html += `</tbody></table>`;
+        document.getElementById('compareTableContainer').innerHTML = html;
+        document.getElementById('compareModal').style.display = 'flex';
+    }
+
+    // 详情模态框
+    function showDetail(id) {
+        const p = productsDB.find(p=>p.id===id);
+        if(!p) return;
+        const detailHtml = `
+            <img style="font-size:60px;">${p.imgEmoji || '📦'} 
+            <h3>${p.name} / ${p.brand}</h3>
+            <p><strong>参考价:</strong> ¥${p.price}</p>
+            <p><strong>性价比评分:</strong> ${p.score}/10</p>
+            <h4>✨ 核心参数</h4>
+            <ul>${Object.entries(p.specs).map(([k,v])=>`<li><strong>${paramNames[k]||k}:</strong> ${v} <span class="param-comment">${paramComments[k]||''}</span></li>`).join('')}</ul>
+            <h4>👍 亮点</h4><p>${p.pros || '配置均衡，满足日常'}</p>
+            <h4>⚠️ 避坑提示</h4><p>${p.cons || '无明显缺点，注意渠道价格'}</p>
+            <h4>🎯 适配人群</h4><p>${p.tags || '主流消费者'}</p>
+            <div class="tool-buttons"><button id="addFromDetail" class="btn-primary" data-id="${p.id}">➕ 加入对比</button></div>
+        `;
+        document.getElementById('detailTitle').innerHTML = p.name;
+        document.getElementById('detailContent').innerHTML = detailHtml;
+        document.getElementById('detailModal').style.display = 'flex';
+        const addBtn = document.getElementById('addFromDetail');
+        if(addBtn) addBtn.onclick = () => { addToCompare(p.id); document.getElementById('detailModal').style.display = 'none'; };
+    }
+
+    // 预算推荐逻辑
+    function recommendByBudget() {
+        let budget = parseInt(document.getElementById('budgetInput').value);
+        let usage = document.getElementById('usageSelect').value;
+        if(isNaN(budget)) { document.getElementById('recommendResult').innerHTML = '请输入预算金额'; return; }
+        let filtered = productsDB.filter(p => p.price <= budget);
+        if(usage !== 'all') {
+            if(usage === '游戏') filtered = filtered.filter(p => p.category === '手机' || p.category === '平板');
+            if(usage === '拍照') filtered = filtered.filter(p => p.category === '手机');
+            if(usage === '办公') filtered = filtered.filter(p => p.category === '平板' || p.category === '穿戴');
+        }
+        filtered.sort((a,b)=>b.score - a.score);
+        if(filtered.length === 0) { document.getElementById('recommendResult').innerHTML = '未找到匹配产品，可提高预算'; return; }
+        let top = filtered.slice(0,3);
+        document.getElementById('recommendResult').innerHTML = top.map(p => `🏆 ${p.name} | ¥${p.price} | 评分${p.score}`).join(' &nbsp; ');
+    }
+
+    // 导出PDF (window.print)
+    function exportAsPDF() {
+        const content = document.getElementById('compareTableContainer').innerHTML;
+        const win = window.open();
+        win.document.write(`<html><head><title>产品对比报告</title><style>table{border-collapse:collapse; width:100%} td,th{border:1px solid #aaa; padding:8px}</style></head><body>${content}</body></html>`);
+        win.print();
+    }
+
+    // 模拟分享链接
+    function copyCompareLink() {
+        const ids = compareList.map(p=>p.id).join(',');
+        alert(`对比链接已复制（演示版）: ${window.location.href}?compare=${ids}  \n可保存当前对比产品组合`);
+    }
+
+    function screenshotTip() { alert("可使用浏览器截图功能 (Ctrl+Shift+S) 或系统截图工具保存对比结果"); }
+
+    // 页面初始化及事件绑定
+    function init() {
+        renderProducts();
+        document.getElementById('searchInput').addEventListener('input', renderProducts);
+        document.getElementById('categoryFilter').addEventListener('change', renderProducts);
+        document.getElementById('brandFilter').addEventListener('change', renderProducts);
+        document.getElementById('sortSelect').addEventListener('change', renderProducts);
+        document.getElementById('startCompareBtn').addEventListener('click', showCompareModal);
+        document.getElementById('clearCompareBtn').addEventListener('click', ()=>{ compareList=[]; updateCompareBar(); });
+        document.getElementById('recommendBtn').addEventListener('click', recommendByBudget);
+        // 模态框关闭
+        document.querySelectorAll('.close-modal, .close-detail').forEach(el => {
+            el.addEventListener('click', () => { document.getElementById('compareModal').style.display = 'none'; document.getElementById('detailModal').style.display = 'none'; });
+        });
+        document.getElementById('exportPdfBtn')?.addEventListener('click', exportAsPDF);
+        document.getElementById('copyLinkBtn')?.addEventListener('click', copyCompareLink);
+        document.getElementById('screenshotBtn')?.addEventListener('click', screenshotTip);
+        window.onclick = (e) => { if(e.target.classList.contains('modal')) { e.target.style.display = 'none'; } };
+        // 导航模拟简单滚动
+        document.querySelectorAll('[data-nav]').forEach(link=>{
+            link.addEventListener('click',(e)=>{ e.preventDefault(); window.scrollTo({top:0,behavior:'smooth'}); renderProducts(); });
+        });
+    }
+    init();
+</script>
+<footer>极客对比 · 纯粹参数工具 | 无广告无带货，数据基于公开参数仅供参考</footer>
+</body>
+</html>
